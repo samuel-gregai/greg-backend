@@ -150,7 +150,7 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     
-    sendHtmlRedirect(res, "https://web.gregthe.ai/actions", "Signing you into Greg...");
+    sendHtmlRedirect(res, "https://web.gregthe.ai/actions", "Signing you into Greg...",10000);
   } catch (error:any) {
     console.error("Error during OAuth callback:", error.response?.data || error.message || error);
     res.status(500).send("Authentication failed");
