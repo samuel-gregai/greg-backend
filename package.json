@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node server.js"
+  },
   "type": "module",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
