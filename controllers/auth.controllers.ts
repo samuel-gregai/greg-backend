@@ -109,8 +109,8 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
     if (!user) {
       user = await User.create({
         email,
-        firstname: given_name,
-        lastname: family_name,
+        firstName: given_name,
+        lastName: family_name,
       });
     }
 
