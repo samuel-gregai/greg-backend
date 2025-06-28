@@ -140,13 +140,13 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
       { expiresIn: "7d" }
     );
 
+    const isDev = process.env.NODE_ENV !== "production";
     res.cookie("session_token", sessionToken, {
       httpOnly: true,
-      sameSite: "none",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: isDev ? "lax" : "none",
+      secure: !isDev,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
     //Redirect to frontend
     res.redirect('http://localhost:1856/actions');
 
