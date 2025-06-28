@@ -201,9 +201,9 @@ const getUserProfile = async (req: Request, res: Response): Promise<void> => {
       data: {
         id: user.id,
         email: user.email,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        name: `${user.firstname} ${user.lastname}`.trim(),
+        firstname: user.firstName,
+        lastname: user.lastName,
+        name: `${user.firstName} ${user.lastName}`.trim(),
       }
     });
   } catch (error) {
