@@ -150,8 +150,23 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
     });
 
     //Redirect to frontend
-    res.redirect('https://web.gregthe.ai/actions');
-
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Signing you in...</title>
+          <script>
+            setTimeout(() => {
+              window.location.href = "https://web.gregthe.ai/actions";
+            }, 1500);
+          </script>
+        </head>
+        <body>
+          <p>Signing you in... Redirecting to Greg 👋</p>
+        </body>
+      </html>
+    `);
   } catch (error:any) {
     console.error("Error during OAuth callback:", error.response?.data || error.message || error);
     res.status(500).send("Authentication failed");
