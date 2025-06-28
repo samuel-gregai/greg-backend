@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 export interface JwtPayload {
   userId?: string;
-  sub?: string; // Some JWTs use 'sub' instead of 'userId'
+  sub?: string;
   email: string;
   iat: number;
   exp: number;
@@ -30,33 +30,37 @@ const parseCookies = (cookieHeader: string): Record<string, string> => {
     }, {} as Record<string, string>);
 };
 
+// Main middleware that handles both JWT and session authentication
 export const verifyToken = (
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
   let token: string | undefined;
+  let authMethod: 'jwt' | 'session' = 'jwt';
+  
   try {
-    
     // Check Authorization header first (Bearer token)
     const authHeader = req.headers.authorization;
     if (authHeader?.startsWith("Bearer ")) {
       token = authHeader.substring(7);
+      authMethod = 'jwt';
       console.log("Found Bearer token in Authorization header");
     } 
-    // Fallback to cookies - look for multiple possible cookie names
+    // Fallback to cookies for session-based auth
     else if (req.headers.cookie) {
       const cookies = parseCookies(req.headers.cookie);
       console.log("Available cookies:", Object.keys(cookies));
       
-      // Check for various cookie names that might contain the token
-      token = cookies.session_token || // Your session token name
+      // Check for session token in cookies
+      token = cookies.session_token || 
               cookies.token || 
               cookies.accessToken ||
               cookies.access_token;
               
       if (token) {
-        console.log("Found token in cookies");
+        authMethod = 'session';
+        console.log("Found session token in cookies");
       }
     }
 
@@ -84,22 +88,23 @@ export const verifyToken = (
 
     // Verify and decode token
     const decoded = jwt.verify(token, secret) as JwtPayload;
-    console.log("Token verified successfully for user:", decoded.email);
+    console.log(`${authMethod} token verified successfully for user:`, decoded.email);
     
-    // Additional validation (optional)
+    // Additional validation
     if (!decoded.userId && !decoded.sub) {
       throw new Error("Invalid token payload - missing user ID");
     }
     
-    // Normalize the user ID field (handle both userId and sub)
+    // Normalize the user ID field and add auth method info
     req.user = {
       ...decoded,
       userId: decoded.userId || decoded.sub || '',
-    } as JwtPayload;
+      authMethod, // Add this to track how user was authenticated
+    } as JwtPayload & { authMethod: 'jwt' | 'session' };
     
     next();
   } catch (error: any) {
-    console.error("JWT verification failed:", error.message);
+    console.error(`${authMethod} verification failed:`, error.message);
     console.error("Token that failed:", token ? `${token.substring(0, 20)}...` : 'undefined');
     
     // More specific error messages based on JWT errors
@@ -115,6 +120,45 @@ export const verifyToken = (
     res.status(401).json({
       success: false,
       message,
+      authMethod,
     });
   }
+};
+
+// Optional: Separate middleware for JWT-only routes
+export const verifyJWTOnly = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader?.startsWith("Bearer ")) {
+    res.status(401).json({
+      success: false,
+      message: "JWT token required in Authorization header",
+    });
+    return;
+  }
+  
+  // Use the main middleware logic but force JWT method
+  verifyToken(req, res, next);
+};
+
+// Optional: Separate middleware for session-only routes
+export const verifySessionOnly = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  if (!req.headers.cookie) {
+    res.status(401).json({
+      success: false,
+      message: "Session cookie required",
+    });
+    return;
+  }
+  
+  // Use the main middleware logic but force session method
+  verifyToken(req, res, next);
 };
