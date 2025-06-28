@@ -150,7 +150,7 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
     });
 
     //Redirect to frontend
-    res.redirect('http://localhost:1856/actions');
+    res.redirect('https://web.gregthe.ai/actions');
 
   } catch (error:any) {
     console.error("Error during OAuth callback:", error.response?.data || error.message || error);
