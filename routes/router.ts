@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/auth/signin", signinHandler);
 router.post("/auth/signup", signupHandler);
-router.get("/users/me", verifyToken, getUserProfile); // Now includes both middleware and handler
+router.get("/users/me", verifyToken, getUserProfile); 
 router.get("/auth/google", googleAuthServer)
 router.get("/auth/callback", googleResourceServer)
 

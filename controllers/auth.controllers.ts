@@ -59,7 +59,7 @@ const googleAuthServer = async (req: Request, res: Response): Promise<void> => {
   redirectUrl.searchParams.set("client_id", CLIENT_ID!);
   redirectUrl.searchParams.set(
     "redirect_uri",
-    "http://localhost:5000/auth/callback"
+    "https://greg-backend.onrender.com/auth/callback"
   );
   redirectUrl.searchParams.set("response_type", "code");
   redirectUrl.searchParams.set("scope", "email profile");
@@ -74,7 +74,7 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
   const CLIENT_ID = process.env.CLIENT_ID!;
   const CLIENT_SECRET = process.env.CLIENT_SECRET!;
   const JWT_SECRET = process.env.JWT_SECRET!; // Use the same secret as verifyToken
-  const FRONTEND_URL = "http://localhost:3000"
+
 
   if (!code) {
     res.status(400).send("No code provided");
@@ -88,7 +88,7 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
         code,
         client_id: CLIENT_ID,
         client_secret: CLIENT_SECRET,
-        redirect_uri: "http://localhost:5000/auth/callback",
+        redirect_uri: "https://greg-backend.onrender.com/auth/callback",
         grant_type: "authorization_code",
       },
       headers: {
@@ -141,11 +141,12 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
     res.cookie("session_token", sessionToken, {
       httpOnly: true,
       sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     //Redirect to frontend
-    res.redirect('http://localhost:3000/actions');
+    res.redirect('http://localhost:1856/actions');
 
   } catch (error) {
     console.error("Error during OAuth callback:", error);
