@@ -144,7 +144,7 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
 
     res.cookie("session_token", sessionToken, {
       httpOnly: true,
-      sameSite: isLocalDev ? "lax" : "none",
+      sameSite: "none",
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
