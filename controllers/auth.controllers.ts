@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import { User } from "../models/users.model.ts";
+import { User } from "../models/users.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import { Account } from "../models/accounts.model.ts";
+import { Account } from "../models/accounts.model";
 
 interface OAUTHJWTPAYLOAD {
   email: string;

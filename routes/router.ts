@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { signupHandler, signinHandler, googleAuthServer, googleResourceServer, getUserProfile } from "../controllers/auth.controllers.ts";
-import { verifyToken } from "../middlewares/verifyToken.ts";
+import { signupHandler, signinHandler, googleAuthServer, googleResourceServer, getUserProfile } from "../controllers/auth.controllers";
+import { verifyToken } from "../middlewares/verifyToken";
 
 
 const router = Router();
