@@ -3,8 +3,8 @@ export type LoginType = {
     password: string;
 }
 export type SignupType = {
-    firstName: string;
-    lastName: string;
+    firstname: string;
+    lastname: string;
     email: string;
     password: string;
     confirmPassword: string;
