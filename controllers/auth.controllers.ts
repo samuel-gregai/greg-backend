@@ -75,6 +75,8 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
   const CLIENT_SECRET = process.env.CLIENT_SECRET!;
   const JWT_SECRET = process.env.JWT_SECRET!; // Use the same secret as verifyToken
 
+  console.log("code", code)
+
 
   if (!code) {
     res.status(400).send("No code provided");
@@ -148,8 +150,8 @@ const googleResourceServer = async (req: Request, res: Response): Promise<void> 
     //Redirect to frontend
     res.redirect('http://localhost:1856/actions');
 
-  } catch (error) {
-    console.error("Error during OAuth callback:", error);
+  } catch (error:any) {
+    console.error("Error during OAuth callback:", error.response?.data || error.message || error);
     res.status(500).send("Authentication failed");
   }
 };
