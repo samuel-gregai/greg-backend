@@ -12,7 +12,7 @@ const app = express();
     await connectDB()
 
     app.use(cors({
-        origin: "http://localhost:1856",
+        origin: ["http://localhost:1856","https://web.gregthe.ai/"],
         credentials: true
     }))
     app.use(cookieParser());
